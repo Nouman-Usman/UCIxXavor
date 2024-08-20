@@ -9,6 +9,7 @@ from langchain_core.prompts import (
 from langchain_core.messages import SystemMessage
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
+import markdown
 # from frt_processing import process_frt, live_frt
 # from video_upload import upload_video
 
@@ -112,8 +113,11 @@ def chat():
         )
 
         response = conversation.predict(human_input=user_question)
+        response_markdown = markdown.markdown(response)
 
-        return jsonify({"answer": response})
+        # Return the formatted response
+        return jsonify({"answer": response_markdown})
+        # return jsonify({"answer": response})
 
     return jsonify({"answer": "Sorry, I didn't understand that."})
 
