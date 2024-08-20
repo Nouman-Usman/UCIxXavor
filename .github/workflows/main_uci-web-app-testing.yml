@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - uci-web-app
+name: Build and deploy Python app to Azure Web App - uci-web-app-testing
 
 on:
   push:
@@ -65,14 +65,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_CDC8D19D1EF34FC698A89BC46433BA46 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D73C40B9AF4F4CF79E9D5526BCCF4EC6 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1ACC71D768134FAA9DB8CC12FF344E7C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B8FDE09B4DED4FF4AC85CD2D7849A98F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FC8911E0A0FE4896AEB091FF2B82F9F9 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_ECC7D883FE1040CB9AB91DD67DF907BE }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'uci-web-app'
+          app-name: 'uci-web-app-testing'
           slot-name: 'Production'
           
