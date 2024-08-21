@@ -31,7 +31,7 @@ with open('prompt.json', 'r') as file:
 
 # Get system prompt from JSON
 system_prompt = assessment_data['system_prompt']
-conversational_memory_length = 20  # number of previous messages the chatbot will remember during the conversation
+conversational_memory_length = 20  # number of previous messages the chatbot will remember during the conversation and
 memory = ConversationBufferWindowMemory(k=conversational_memory_length, memory_key="chat_history", return_messages=True)
 
 UPLOAD_DIR = 'uploads'
