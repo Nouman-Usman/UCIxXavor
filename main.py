@@ -11,13 +11,14 @@ from langchain_core.messages import SystemMessage
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 import markdown
-# from frt_processing import process_frt, live_frt
-# from video_upload import upload_video
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
 # Get Groq API key
-groq_api_key = os.environ.get("API", "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")
+groq_api_key = os.getenv("GROQ_API")
+
 model = 'llama3-8b-8192'
 
 # Initialize Groq Langchain chat object and conversation
