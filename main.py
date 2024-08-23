@@ -12,6 +12,7 @@ from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 import markdown
 from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 

@@ -29,11 +29,24 @@ with open('prompt.json', 'r') as file:
     assessment_data = json.load(file)
 
 system_prompt = assessment_data['system_prompt']
+personal_details_questions = assessment_data['steps']['intro']['questions']
 conversational_memory_length = 20  # Number of previous messages the chatbot will remember during the conversation
 memory = ConversationBufferWindowMemory(k=conversational_memory_length, memory_key="chat_history", return_messages=True)
 
 # Initialize BP logs storage
 bp_logs = []
+
+@cl.on_chat_start
+async def start():
+    # Begin by asking the first question in the personal details section
+    welcome_message = """
+    I'm here to help you with any Hypertension Query 💡
+    """
+    await cl.Message(content=welcome_message).send()
+
+    # Start asking personal details questions
+    for question in personal_details_questions:
+        await cl.Message(content=question).send()
 
 @cl.on_message
 async def handle_message(message: cl.Message):
@@ -83,13 +96,6 @@ async def handle_message(message: cl.Message):
 
     else:
         await cl.Message(content="Sorry, I didn't understand that.").send()
-
-@cl.on_chat_start
-async def start():
-    welcome_message = """
-    I'm here to help you with any Hypertension Query 💡
-    """
-    await cl.Message(content=welcome_message).send()
 
 if __name__ == "__main__":
     cl.run()
