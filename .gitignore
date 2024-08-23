@@ -3,3 +3,4 @@ try.py
 .env
 .chainlit
 __pycache__
+chainlit.md
