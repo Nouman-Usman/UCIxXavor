@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 # load_dotenv()
 
 app = Flask(__name__)
-
+# load_dotenv()
 # Get Groq API key
 groq_api_key = os.getenv("GROQ_API")
 
