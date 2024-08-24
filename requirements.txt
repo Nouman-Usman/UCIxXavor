@@ -98,7 +98,6 @@ opentelemetry-instrumentation
 opentelemetry-proto
 opentelemetry-sdk
 opentelemetry-semantic-conventions
-opt-einsum
 orjson
 packaging
 pandas
