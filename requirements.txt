@@ -1,6 +1,1 @@
-Flask
-langchain
-langchain-core
-langchain-groq
-markdown
-python-dotenv
+flask
