@@ -27,7 +27,7 @@ groq_chat = ChatGroq(
         model_name=model
 )
 
-with open('prompt.json', 'r') as file:
+with open('steps.json', 'r') as file:
     assessment_data = json.load(file)
 
 # Get system prompt from JSON
@@ -51,7 +51,7 @@ def chat():
         # Construct a chat prompt template using various components
         prompt = ChatPromptTemplate.from_messages(
             [
-                SystemMessage(content=system_prompt),
+                SystemMessage(content=f"{system_prompt}\nEvaluation rules: {json.dumps(assessment_data['steps']['blood_pressure_evaluation'])}"),
                 MessagesPlaceholder(variable_name="chat_history"),
                 HumanMessagePromptTemplate.from_template("{human_input}")
             ]

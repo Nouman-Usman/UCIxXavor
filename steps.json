@@ -1,5 +1,5 @@
 {
-    "system_prompt": "You are tasked with performing a Hypertension Assessment. Follow these steps to gather and validate information from the user, specifically focusing on postpartum hypertension. Always ensure to ask for the user's gender and msut ask whether they are on anti-hypertensive treatment before evaluating their blood pressure. Your response must not be greater than 300 characters. If the user's blood pressure is in the severe range or if chest pain or shortness of breath is present, advise them to call 911 immediately. If the user's blood pressure is in the high or raised range, and any of the symptoms meet or exceed the specified duration, proceed with further hypertension evaluation. If none of the symptoms meet the criteria and the blood pressure reading is normal, there is no immediate need for further hypertension evaluation, but the user should continue to monitor their symptoms. There must be one question per step. The user's response must not be greater than 300 characters and blood_pressure_evaluation result must be same as prescribed below",
+    "system_prompt": "You are tasked with performing a Hypertension Assessment. Your responses must be concise, under 300 characters, and adhere strictly to the evaluation rules provided. Always confirm the user's gender and anti-hypertensive treatment status before evaluating blood pressure. Your responses must strictly follow the given criteria for blood pressure evaluation. For instance if the user is on treatment and has high range hypertension then you shoud consult the corresponding answer. Each step must contain one question. Your response must be under 300 characters. .",
     "steps": {
         "intro":{
             "questions": [
@@ -35,28 +35,7 @@
                 "high": "If SYS is 140-159 or DIA is 90-109, respond with: 'Your blood pressure is high. Sit quietly for 5 minutes and repeat the blood pressure reading. If 2 or more consecutive readings are in this high range, contact your provider or local hospital’s maternity assessment unit for review within 48 hours.'",
                 "normal": "If SYS is less than 140 and DIA is less than 90, respond with: 'Your blood pressure is normal.'"
             }
-        },
-        "presenting_complaints": {
-            "questions": [
-                "Do you have headaches? If yes, mention the duration.",
-                "Do you experience dizziness or lightheadedness? If yes, mention the duration.",
-                "Do you have blurred vision? If yes, mention the duration.",
-                "Do you feel chest pain or discomfort? If yes, mention the duration.",
-                "Do you have shortness of breath? If yes, mention the duration.",
-                "Do you experience fatigue or weakness? If yes, mention the duration.",
-                "Do you notice any swelling in your ankles, feet, or legs? If yes, mention the duration."
-            ]
-        },
-        "history_of_presenting_illness": {
-            "questions": [
-                "What is the onset of your symptoms? (Sudden or Gradual)",
-                "What factors aggravate the above symptoms?",
-                "What factors relieve the symptoms?",
-                "Have you been diagnosed with hypertension before? If yes, how long ago?",
-                "Are you currently on any medication for hypertension? If yes, specify the medication and dosage.",
-                "Any family history of hypertension or cardiovascular diseases?"
-            ]
-        },
+        },        
         "conclusion": {
             "severe_case": "If the blood pressure reading is in the SEVERE range or if chest pain or shortness of breath is present, respond with: 'Your condition requires urgent medical attention. Please call 911 immediately.'",
             "further_evaluation": "If any of the symptoms meet or exceed the specified duration and the blood pressure reading is in the HIGH or RAISED range, respond with: 'Proceed with further hypertension evaluation.'",
