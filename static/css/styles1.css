@@ -56,13 +56,13 @@
 
   .user .avatar {
     order: 2;
-    background: url("./src/avatar.jpg");
+    background: url("../src/avatar.jpg");
     background-size: cover;
   }
 
   .bot .avatar {
     order: 1;
-    background: url("./src/bot.jpg");
+    background: url("../static/src/bot.jpg");
     background-size: cover;
   }
 

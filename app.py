@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 # load_dotenv()
 
 app = Flask(__name__)
-# load_dotenv()
+load_dotenv()
 # Get Groq API key
 groq_api_key = os.getenv("GROQ_API")
 
@@ -39,9 +39,12 @@ UPLOAD_DIR = 'uploads'
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/index')
 def index():
     return render_template('index.html')
-
 
 @app.route('/chat', methods=['POST'])
 def chat():
