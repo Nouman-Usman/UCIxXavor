@@ -16,7 +16,7 @@ from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 import markdown
 from dotenv import load_dotenv
-load_dotenv()
+
 
 # CREDENTIALS_FILE = 'plenary-caster-412619-3b8e91b60470.json'
 credentials_info = {
