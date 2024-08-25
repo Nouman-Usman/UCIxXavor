@@ -119,3 +119,36 @@ $('#file-input').change(function() {
         }
     });
 });
+// Example function to update UI with data from the Flask API
+function updateUI(data) {
+    const logsContainer = document.getElementById('logs-container');  // Assuming you have an element with this ID
+    
+    logsContainer.innerHTML = '';  // Clear previous logs
+
+    data.logs.forEach(log => {
+        // Extract values from the log
+        const timestamp = log[0];
+        const email = log[1];
+        const macAddress = log[2];
+        const systolic = log[4];
+        const diastolic = log[3];
+
+        // Create a new HTML element for each log
+        const logElement = document.createElement('div');
+        logElement.innerHTML = `
+            <p>Timestamp: ${timestamp}</p>
+            <p>Email: ${email}</p>
+            <p>MAC Address: ${macAddress}</p>
+            <p>Systolic: ${systolic}</p>
+            <p>Diastolic: ${diastolic}</p>
+        `;
+        logsContainer.appendChild(logElement);
+    });
+}
+
+// Fetch logs from Flask API
+fetch('/get-bp-logs')
+    .then(response => response.json())
+    .then(data => updateUI(data))
+    .catch(error => console.error('Error fetching logs:', error));
+
