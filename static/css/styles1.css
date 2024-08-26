@@ -65,7 +65,7 @@ body {
 
 .bot .avatar {
   order: 1;
-  background: url("../static/src/bot.jpg");
+  background: url("../src/bot.jpg");
   background-size: cover;
 }
 

@@ -17,6 +17,7 @@ from langchain_groq import ChatGroq
 import markdown
 from dotenv import load_dotenv
 
+load_dotenv()
 
 # CREDENTIALS_FILE = 'plenary-caster-412619-3b8e91b60470.json'
 credentials_info = {
@@ -150,7 +151,7 @@ def chat():
 
         response = conversation.predict(human_input=user_question)
         response_markdown = markdown.markdown(response)
-        if "bp" in user_question.lower() or "blood pressure" in user_question.lower():
+        if "bp" in user_question.lower() or "blood pressure" in user_question.lower() or "/" in user_question:
             parts = user_question.lower().split()
             for part in parts:
                 if '/' in part:
