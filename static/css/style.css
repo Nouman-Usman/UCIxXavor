@@ -222,7 +222,7 @@ button {
 .header_section {
     width: 100%;
     float: left;
-    background-image: url(../src/banner-bg.png);
+    background-image: url(../src/background.jpg);
     height: auto;
     height: auto;
     padding: 20px 0px;
@@ -710,7 +710,7 @@ menu_text {
 .news_section {
     width: 100%;
     float: left;
-    background-image: url(../src/news-bg.png);
+    /* background-image: url(../src/news-bg.png); */
     height: auto;
     background-size: 100%;
     padding-bottom: 190px;
