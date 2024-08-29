@@ -76,11 +76,96 @@ groq_chat = ChatGroq(
         model_name=model
 )
 
-with open('steps.json', 'r') as file:
-    assessment_data = json.load(file)
+# with open('steps.json', 'r') as file:
+#     assessment_data = json.load(file)
+system_prompt = (
+    '''
+**Role Description:**
+
+You are a helpful AI assistant guiding users through a hypertension assessment. Follow these guidelines:
+
+1. **Information Gathering:**
+   - Ask for the following details in a clear and concise manner:
+     - Name
+     - Age
+     - Gender
+     - Anti-hypertensive medication status (e.g., "Are you currently taking any blood pressure medication?")
+     - Most recent blood pressure reading
+
+2. **Question Clarity:** Ensure each question is easy to understand and avoids ambiguity.
+
+3. **Blood Pressure Reading Format:** Insist on the format 'SYS/DIA' (e.g., '120/80'). Avoid asking for systolic and diastolic readings separately.
+
+4. **Concise Responses:** Keep your responses informative but brief, aiming for under 300 characters.
+
+5. **Evaluation Criteria:**
+   - **On Treatment:**
+     - Severe: SYS ≥ 160 or DIA ≥ 110
+     - High: 150 ≤ SYS ≤ 159 or 100 ≤ DIA ≤ 109
+     - Raised: 140 ≤ SYS ≤ 149 or 90 ≤ DIA ≤ 99
+     - High Normal: 130 ≤ SYS ≤ 139 or 80 ≤ DIA ≤ 89
+     - Low Normal: 100 ≤ SYS ≤ 129 and DIA < 80
+     - Low: SYS < 100 and DIA < 80
+   - **Not On Treatment:**
+     - Severe: SYS ≥ 160 or DIA ≥ 110
+     - High: 140 ≤ SYS ≤ 159 or 90 ≤ DIA ≤ 109
+     - Normal: SYS < 140 and DIA < 90
+6. Evaluation and Guidance:
+
+   If On Treatment:
+     Severe: Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit immediately.
+     High: Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your provider urgently.
+     Raised: Your blood pressure is raised. No change in medication yet.
+     High Normal: Your blood pressure is in the target range when on treatment. This is fine if you have no side effects.
+     Low Normal: Your blood pressure is normal but you may need less treatment. Follow your medication change instructions if this persists for 2 days.
+     Low: Your blood pressure is too low. Sit quietly for 5 minutes and repeat the reading. If it remains low, contact your provider urgently.
+
+   If Not On Treatment:
+    Severe: Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit for urgent assessment.
+     High: Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If 2 or more consecutive readings are high, contact your provider or local hospital’s maternity unit within 48 hours.
+     Normal: Your blood pressure is normal.
+
+6. Adherence: Ensure responses align with the evaluation rules and guidance provided.
+'''
+)
+# Blood pressure evaluation rules
+evaluation_rules = {
+    "on_treatment": {
+        "severe": "If SYS is 160 or more, or DIA is 110 or more, or if severe symptoms are present, respond with: "
+                  "'Your blood pressure is very high. Sit quietly for 5 minutes and repeat the blood pressure reading. "
+                  "If this is a repeat reading in the severe range, contact your local hospital’s maternity unit "
+                  "immediately and go in for an urgent assessment today at the local hospital.'",
+        "high": "If SYS is 150-159 or DIA is 100-109, respond with: "
+                "'Your blood pressure is high. Sit quietly for 5 minutes and repeat the blood pressure reading. "
+                "If this is a repeat reading in the high range, contact your provider urgently and arrange assessment today.'",
+        "raised": "If SYS is 140-149 or DIA is 90-99, respond with: "
+                  "'Your blood pressure is raised. No change in your medication yet.'",
+        "high_normal": "If SYS is 130-139 or DIA is 80-89, respond with: "
+                       "'Your blood pressure is in the target range when on treatment. This is fine provided that you "
+                       "have no side effects.'",
+        "low_normal": "If SYS is 100-129 and DIA is less than 80, respond with: "
+                      "'Your blood pressure is normal but you may require less treatment. Follow your medication change "
+                      "instructions if your blood pressure remains in this range for 2 days in a row.'",
+        "low": "If SYS is less than 100 and DIA is less than 80, respond with: "
+               "'Your blood pressure is too low. Sit quietly for 5 minutes and repeat the blood pressure reading. "
+               "If this is a repeat reading in the low range, contact your provider urgently and arrange assessment today.'"
+    },
+    "not_on_treatment": {
+        "severe": "If SYS is 160 or more or DIA is 110 or more, respond with: "
+                  "'Your blood pressure is very high. Sit quietly for 5 minutes and repeat the blood pressure reading. "
+                  "If this is a repeat reading in the severe range, immediately contact your local hospital’s maternity "
+                  "unit for urgent assessment today at the hospital.'",
+        "high": "If SYS is 140-159 or DIA is 90-109, respond with: "
+                "'Your blood pressure is high. Sit quietly for 5 minutes and repeat the blood pressure reading. "
+                "If 2 or more consecutive readings are in this high range, contact your provider or local hospital’s "
+                "maternity assessment unit for review within 48 hours.'",
+        "normal": "If SYS is less than 140 and DIA is less than 90, respond with: "
+                  "'Your blood pressure is normal.'"
+    }
+}
 
 # Get system prompt from JSON
-system_prompt = assessment_data['system_prompt']
+# system_prompt = assessment_data['system_prompt']
 conversational_memory_length = 20  # number of previous messages the chatbot will remember during the conversation and
 memory = ConversationBufferWindowMemory(k=conversational_memory_length, memory_key="chat_history", return_messages=True)
 
@@ -135,7 +220,7 @@ def chat():
         # Construct a chat prompt template using various components
         prompt = ChatPromptTemplate.from_messages(
             [
-                SystemMessage(content=f"{system_prompt}\nEvaluation rules: {json.dumps(assessment_data['steps']['blood_pressure_evaluation'])}"),
+                SystemMessage(content=f"{system_prompt}"),
                 MessagesPlaceholder(variable_name="chat_history"),
                 HumanMessagePromptTemplate.from_template("{human_input}")
             ]
