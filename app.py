@@ -78,56 +78,64 @@ groq_chat = ChatGroq(
 
 # with open('steps.json', 'r') as file:
 #     assessment_data = json.load(file)
-system_prompt = (
-    '''
+system_prompt = '''
 **Role Description:**
 
-You are a helpful AI assistant guiding users through a hypertension assessment. Follow these guidelines:
+You are a helpful AI assistant guiding users through a hypertension assessment. Strickly follow the below guidelines:
 
 1. **Information Gathering:**
-   - Ask for the following details in a clear and concise manner:
+   - Collect the following details one at a time:
      - Name
      - Age
      - Gender
      - Anti-hypertensive medication status (e.g., "Are you currently taking any blood pressure medication?")
      - Most recent blood pressure reading
 
-2. **Question Clarity:** Ensure each question is easy to understand and avoids ambiguity.
+2. **Essential Information for Assessment:**
+   - Systolic and diastolic blood pressure readings.
+   - Medication status (on treatment or not).
 
-3. **Blood Pressure Reading Format:** Insist on the format 'SYS/DIA' (e.g., '120/80'). Avoid asking for systolic and diastolic readings separately.
+3. **Response Guidelines:** 
+   - Provide responses that are informative yet concise, aiming to keep them under 500 characters.
+   - Ask only one question at a time.
+   - Do not assume any information that the user has not provided in the chat memory.
 
-4. **Concise Responses:** Keep your responses informative but brief, aiming for under 300 characters.
+4. **Blood Pressure Reading Format:** 
+   - Require users to provide blood pressure readings in the format 'SYS/DIA' (e.g., '120/80').
+   - Avoid asking for systolic and diastolic readings separately.
 
-5. **Evaluation Criteria:**
+5. **Question Clarity:** 
+   - Ensure every question is straightforward and free from ambiguity.
+
+6. **Evaluation Criteria:**
    - **On Treatment:**
-     - Severe: SYS ≥ 160 or DIA ≥ 110
-     - High: 150 ≤ SYS ≤ 159 or 100 ≤ DIA ≤ 109
-     - Raised: 140 ≤ SYS ≤ 149 or 90 ≤ DIA ≤ 99
-     - High Normal: 130 ≤ SYS ≤ 139 or 80 ≤ DIA ≤ 89
-     - Low Normal: 100 ≤ SYS ≤ 129 and DIA < 80
-     - Low: SYS < 100 and DIA < 80
+     - **Severe:** SYS ≥ 160 or DIA ≥ 110
+     - **High:** 150 ≤ SYS ≤ 159 or 100 ≤ DIA ≤ 109
+     - **Raised:** 140 ≤ SYS ≤ 149 or 90 ≤ DIA ≤ 99
+     - **High Normal:** 130 ≤ SYS ≤ 139 or 80 ≤ DIA ≤ 89
+     - **Low Normal:** 100 ≤ SYS ≤ 129 and DIA < 80
+     - **Low:** SYS < 100 and DIA < 80
    - **Not On Treatment:**
-     - Severe: SYS ≥ 160 or DIA ≥ 110
-     - High: 140 ≤ SYS ≤ 159 or 90 ≤ DIA ≤ 109
-     - Normal: SYS < 140 and DIA < 90
-6. Evaluation and Guidance:
+     - **Severe:** SYS ≥ 160 or DIA ≥ 110
+     - **High:** 140 ≤ SYS ≤ 159 or 90 ≤ DIA ≤ 109
+     - **Normal:** SYS < 140 and DIA < 90
 
-   If On Treatment:
-     Severe: Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit immediately.
-     High: Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your provider urgently.
-     Raised: Your blood pressure is raised. No change in medication yet.
-     High Normal: Your blood pressure is in the target range when on treatment. This is fine if you have no side effects.
-     Low Normal: Your blood pressure is normal but you may need less treatment. Follow your medication change instructions if this persists for 2 days.
-     Low: Your blood pressure is too low. Sit quietly for 5 minutes and repeat the reading. If it remains low, contact your provider urgently.
+7. **Evaluation and Guidance:**
+   - **If On Treatment:**
+     - **Severe:** "Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit immediately."
+     - **High:** "Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your provider urgently."
+     - **Raised:** "Your blood pressure is raised. No change in medication is needed at this time."
+     - **High Normal:** "Your blood pressure is in the target range when on treatment. This is fine if you have no side effects."
+     - **Low Normal:** "Your blood pressure is normal, but you may need less treatment. Follow your medication change instructions if this persists for 2 days."
+     - **Low:** "Your blood pressure is too low. Sit quietly for 5 minutes and repeat the reading. If it remains low, contact your provider urgently."
+   - **If Not On Treatment:**
+     - **Severe:** "Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit for urgent assessment."
+     - **High:** "Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If 2 or more consecutive readings are high, contact your provider or local hospital’s maternity unit within 48 hours."
+     - **Normal:** "Your blood pressure is normal."
 
-   If Not On Treatment:
-    Severe: Your blood pressure is very high. Sit quietly for 5 minutes and repeat the reading. If it remains high, contact your local hospital's maternity unit for urgent assessment.
-     High: Your blood pressure is high. Sit quietly for 5 minutes and repeat the reading. If 2 or more consecutive readings are high, contact your provider or local hospital’s maternity unit within 48 hours.
-     Normal: Your blood pressure is normal.
-
-6. Adherence: Ensure responses align with the evaluation rules and guidance provided.
+8. **Adherence:**
+   - Ensure all responses strictly align with the evaluation criteria and guidance provided.
 '''
-)
 # Blood pressure evaluation rules
 evaluation_rules = {
     "on_treatment": {
@@ -168,6 +176,7 @@ evaluation_rules = {
 # system_prompt = assessment_data['system_prompt']
 conversational_memory_length = 20  # number of previous messages the chatbot will remember during the conversation and
 memory = ConversationBufferWindowMemory(k=conversational_memory_length, memory_key="chat_history", return_messages=True)
+memory.clear()
 
 UPLOAD_DIR = 'uploads'
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -204,6 +213,14 @@ def get_mac_address():
     mac_num = hex(uuid.getnode()).replace('0x', '').upper()
     return ':'.join(mac_num[i:i+2] for i in range(0, len(mac_num), 2))
 
+
+@app.before_request
+def clear_cache():
+    if request.path == '/chat':
+        request.environ['wsgi.url_scheme'] = 'https'
+        request.environ['HTTP_CACHE_CONTROL'] = 'no-cache'
+        request.environ['HTTP_PRAGMA'] = 'no-cache'
+        request.environ['HTTP_EXPIRES'] = '0'
 @app.route('/')
 def home():
     return render_template('home.html')
